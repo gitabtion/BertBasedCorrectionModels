@@ -1,0 +1,30 @@
+MODEL:
+  BERT_CKPT: "hfl/chinese-macbert-base"
+  DEVICE: "cuda:0"
+  NAME: "macbert4csc"
+  # [loss_coefficient]
+  HYPER_PARAMS: [ 0.8 ]
+
+DATASETS:
+  TRAIN: "datasets/csc/train.json"
+  VALID: "datasets/csc/dev.json"
+  TEST: "datasets/csc/test.json"
+
+SOLVER:
+  BASE_LR: 0.001
+  WEIGHT_DECAY: 0.00001
+  BATCH_SIZE: 8
+  WARMUP_EPOCHS: 8
+  MAX_EPOCHS: 20
+  ACCUMULATE_GRAD_BATCHES: 16
+
+
+TEST:
+  BATCH_SIZE: 8
+
+TASK:
+  NAME: "csc"
+  # [loss_weight]
+  OTHER_PARAMS: [ 1.0 ]
+
+OUTPUT_DIR: "checkpoints/macbert4csc"

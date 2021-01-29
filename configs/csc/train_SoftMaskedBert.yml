@@ -1,0 +1,29 @@
+MODEL:
+  BERT_CKPT: "bert-base-chinese"
+  DEVICE: "cuda:1"
+  NAME: "SoftMaskedBertModel"
+  GPU_IDS: [1]
+  # [loss_coefficient]
+  HYPER_PARAMS: [0.8]
+
+DATASETS:
+  TRAIN: "datasets/csc/train.json"
+  VALID: "datasets/csc/dev.json"
+  TEST: "datasets/csc/test.json"
+
+SOLVER:
+  BASE_LR: 0.001
+  WEIGHT_DECAY: 0.00001
+  BATCH_SIZE: 16
+  WARMUP_EPOCHS: 8
+  MAX_EPOCHS: 20
+  ACCUMULATE_GRAD_BATCHES: 16
+
+
+TEST:
+  BATCH_SIZE: 16
+
+TASK:
+  NAME: "csc"
+
+OUTPUT_DIR: "checkpoints/SoftMaskedBert"
