@@ -7,7 +7,7 @@
 import operator
 import torch
 import numpy as np
-from bbcm.utils.evaluations import compute_corrector_prf
+from bbcm.utils.evaluations import compute_corrector_prf, compute_sentence_level_prf
 from .bases import BaseTrainingEngine
 
 
@@ -19,7 +19,7 @@ class CscTrainingModel(BaseTrainingEngine):
     def __init__(self, cfg, *args, **kwargs):
         super().__init__(cfg, *args, **kwargs)
         # loss weight
-        self.w = cfg.MODEL.HYPER_PARAMS.HYPER_PARAMS[0]
+        self.w = cfg.MODEL.HYPER_PARAMS[0]
 
     def training_step(self, batch, batch_idx):
         ori_text, cor_text, det_labels = batch
@@ -66,7 +66,8 @@ class CscTrainingModel(BaseTrainingEngine):
                           f'acc: {np.mean(det_acc_labels):.4f}')
         self._logger.info(f'Correction:\n'
                           f'acc: {np.mean(cor_acc_labels):.4f}')
-        compute_corrector_prf(results)
+        compute_corrector_prf(results, self._logger)
+        compute_sentence_level_prf(results, self._logger)
 
     def test_step(self, batch, batch_idx):
         return self.validation_step(batch, batch_idx)

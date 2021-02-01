@@ -24,7 +24,7 @@ def main():
     cfg = args_parse("csc/train_macbert4csc.yml")
 
     # 如果不存在训练文件则先处理数据
-    if os.path.exists(get_abs_path(cfg.DATASETS.TRAIN)):
+    if not os.path.exists(get_abs_path(cfg.DATASETS.TRAIN)):
         preproc()
 
     tokenizer = BertTokenizer.from_pretrained(cfg.MODEL.BERT_CKPT)
@@ -35,7 +35,8 @@ def main():
     loaders = make_loaders(cfg, get_csc_loader, tokenizer=tokenizer)
     ckpt_callback = ModelCheckpoint(
         monitor='val_loss',
-        filepath=get_abs_path(cfg.OUTPUT_DIR, 'csc-{epoch:02d}-{val_loss:.2f}'),
+        dirpath=get_abs_path(cfg.OUTPUT_DIR),
+        filename='{epoch}-{val_loss:.2f}',
         save_top_k=1,
         mode='min'
     )

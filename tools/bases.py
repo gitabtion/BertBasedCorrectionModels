@@ -8,6 +8,8 @@ import argparse
 import os
 
 import logging
+
+import torch
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 from bbcm.utils import get_abs_path
@@ -41,7 +43,6 @@ def args_parse(config_file=''):
     output_dir = cfg.OUTPUT_DIR
 
     logger = setup_logger(name, get_abs_path(output_dir), 0)
-    logger.info("Using {} GPUS".format(num_gpus))
     logger.info(args)
 
     if config_file != '':
@@ -66,6 +67,9 @@ def train(config, model, loaders, ckpt_callback=None):
         None
     """
     train_loader, valid_loader, test_loader = loaders
+    callback_path = get_abs_path(config.OUTPUT_DIR, 'callback.pt')
+    if ckpt_callback is None and os.path.exists(callback_path):
+        ckpt_callback = torch.load(callback_path)
     trainer = pl.Trainer(max_epochs=config.SOLVER.MAX_EPOCHS,
                          gpus=None if config.MODEL.DEVICE == 'cpu' else config.MODEL.GPU_IDS,
                          accumulate_grad_batches=config.SOLVER.ACCUMULATE_GRAD_BATCHES,
@@ -81,5 +85,10 @@ def train(config, model, loaders, ckpt_callback=None):
             trainer.fit(model, train_loader)
     # 是否进行测试的逻辑同训练
     if 'test' in config.MODE and test_loader and len(test_loader) > 0:
-        model.load_from_checkpoint(ckpt_callback.best_model_path)
+        ckpt_path = None if (ckpt_callback is None) else ckpt_callback.best_model_path
+        if (ckpt_path is not None) and os.path.exists(ckpt_path):
+            model.load_state_dict(ckpt_path)
         trainer.test(model, test_loader)
+    if ckpt_callback is not None:
+        torch.save(ckpt_callback, get_abs_path(config.OUTPUT_DIR, 'callback.pt'))
+
