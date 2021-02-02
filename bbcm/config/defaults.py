@@ -88,18 +88,16 @@ _C.SOLVER.ACCUMULATE_GRAD_BATCHES = 1
 # see 2 images per batch
 _C.SOLVER.BATCH_SIZE = 16
 
-# This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
-# see 2 images per batch
+
 _C.TEST = CN()
 _C.TEST.BATCH_SIZE = 8
-_C.TEST.WEIGHT = ""
+_C.TEST.CKPT_FN = ""
 
 # ---------------------------------------------------------------------------- #
 # Task specific
 # ---------------------------------------------------------------------------- #
 _C.TASK = CN()
 _C.TASK.NAME = "CSC"
-_C.TASK.OTHER_PARMS = []
 
 
 # ---------------------------------------------------------------------------- #

@@ -32,6 +32,11 @@ def main():
         model = BertForCsc(cfg, tokenizer)
     else:
         model = SoftMaskedBertModel(cfg, tokenizer)
+
+    if len(cfg.MODEL.WEIGHTS) > 0:
+        ckpt_path = get_abs_path(cfg.OUTPUT_DIR, cfg.MODEL.WEIGHTS)
+        model.load_from_checkpoint(ckpt_path, cfg=cfg, tokenizer=tokenizer)
+
     loaders = make_loaders(cfg, get_csc_loader, tokenizer=tokenizer)
     ckpt_callback = ModelCheckpoint(
         monitor='val_loss',

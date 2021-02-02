@@ -1,6 +1,6 @@
 MODEL:
   BERT_CKPT: "hfl/chinese-macbert-base"
-  DEVICE: "cuda:0"
+  DEVICE: "cpu"
   NAME: "macbert4csc"
   # [loss_coefficient]
   HYPER_PARAMS: [ 1.0 ]

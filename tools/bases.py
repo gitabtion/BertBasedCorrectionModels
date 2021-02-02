@@ -24,12 +24,10 @@ def args_parse(config_file=''):
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
-    parser.add_argument("opts", help="Modify config options using the command-line key value", default=None,
+    parser.add_argument("--opts", help="Modify config options using the command-line key value", default=None,
                         nargs=argparse.REMAINDER)
 
     args = parser.parse_args()
-
-    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
 
     config_file = args.config_file or config_file
 
@@ -67,9 +65,6 @@ def train(config, model, loaders, ckpt_callback=None):
         None
     """
     train_loader, valid_loader, test_loader = loaders
-    callback_path = get_abs_path(config.OUTPUT_DIR, 'callback.pt')
-    if ckpt_callback is None and os.path.exists(callback_path):
-        ckpt_callback = torch.load(callback_path)
     trainer = pl.Trainer(max_epochs=config.SOLVER.MAX_EPOCHS,
                          gpus=None if config.MODEL.DEVICE == 'cpu' else config.MODEL.GPU_IDS,
                          accumulate_grad_batches=config.SOLVER.ACCUMULATE_GRAD_BATCHES,
@@ -85,10 +80,13 @@ def train(config, model, loaders, ckpt_callback=None):
             trainer.fit(model, train_loader)
     # 是否进行测试的逻辑同训练
     if 'test' in config.MODE and test_loader and len(test_loader) > 0:
-        ckpt_path = None if (ckpt_callback is None) else ckpt_callback.best_model_path
+        if ckpt_callback and len(ckpt_callback.best_model_path) > 0:
+            ckpt_path = ckpt_callback.best_model_path
+        elif len(config.MODEL.WEIGHTS) > 0:
+            ckpt_path = get_abs_path(config.OUTPUT_DIR, config.MODEL.WEIGHTS)
+        else:
+            ckpt_path = None
+        print(ckpt_path)
         if (ckpt_path is not None) and os.path.exists(ckpt_path):
-            model.load_state_dict(ckpt_path)
+            model.load_state_dict(torch.load(ckpt_path)['state_dict'])
         trainer.test(model, test_loader)
-    if ckpt_callback is not None:
-        torch.save(ckpt_callback, get_abs_path(config.OUTPUT_DIR, 'callback.pt'))
-
