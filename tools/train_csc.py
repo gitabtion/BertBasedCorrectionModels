@@ -26,7 +26,6 @@ def main():
     # 如果不存在训练文件则先处理数据
     if not os.path.exists(get_abs_path(cfg.DATASETS.TRAIN)):
         preproc()
-
     tokenizer = BertTokenizer.from_pretrained(cfg.MODEL.BERT_CKPT)
     if cfg.MODEL.NAME in ["bert4csc", "macbert4csc"]:
         model = BertForCsc(cfg, tokenizer)

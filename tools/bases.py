@@ -24,7 +24,7 @@ def args_parse(config_file=''):
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
-    parser.add_argument("--opts", help="Modify config options using the command-line key value", default=None,
+    parser.add_argument("--opts", help="Modify config options using the command-line key value", default=[],
                         nargs=argparse.REMAINDER)
 
     args = parser.parse_args()

@@ -30,10 +30,25 @@ python tools/train_csc.py --config_file train_SoftMaskedBert.yml
 - train_SoftMaskedBert.yml
 
 ## 实验结果
+
+### SoftMaskedBert
 |component|sentence level acc|p|r|f|
 |:-:|:-:|:-:|:-:|:-:|
-|SoftMaskedBert Detection|0.5045|0.8252|0.8416|0.8333|
-|SoftMaskedBert Correction|0.8055|0.9395|0.8748|0.9060|
+|Detection|0.5045|0.8252|0.8416|0.8333|
+|Correction|0.8055|0.9395|0.8748|0.9060|
+
+### Bert类
+#### char level
+|MODEL|p|r|f|
+|:-:|:-:|:-:|:-:|
+|BERT4CSC|0.9431|0.8738|0.9071|
+|MACBERT4CSC|0.9074|0.8525|0.8791|
+
+#### sentence level
+|model|acc|p|r|f|
+|:-:|:-:|:-:|:-:|:-:|
+|BERT4CSC|0.7973|0.8600|0.7029|0.7736|
+|MACBERT4CSC|0.7982|0.8524|0.7140|0.7771|
 
 ## References
 1. [Spelling Error Correction with Soft-Masked BERT](https://arxiv.org/abs/2005.07421)

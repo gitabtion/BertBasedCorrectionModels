@@ -28,6 +28,7 @@ _C.MODEL.GPU_IDS = [0]
 _C.MODEL.NUM_CLASSES = 10
 _C.MODEL.BERT_CKPT = 'bert-base-chinese'
 _C.MODEL.NAME = ''
+_C.MODEL.WEIGHTS = ''
 _C.MODEL.HYPER_PARAMS = []
 
 # -----------------------------------------------------------------------------

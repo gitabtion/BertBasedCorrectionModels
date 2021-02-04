@@ -23,5 +23,5 @@ class BaseTrainingEngine(pl.LightningModule):
 
         return [optimizer], [scheduler]
 
-    def on_validation_batch_start(self, batch, batch_idx: int, dataloader_idx: int) -> None:
+    def on_validation_epoch_start(self) -> None:
         self._logger.info('Valid.')
