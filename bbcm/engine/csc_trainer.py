@@ -75,3 +75,14 @@ class CscTrainingModel(BaseTrainingEngine):
     def test_epoch_end(self, outputs) -> None:
         self._logger.info('Test.')
         self.validation_epoch_end(outputs)
+
+    def predict(self, texts):
+        inputs = self.tokenizer(texts, padding=True, return_tensors='pt')
+        with torch.no_grad():
+            outputs = self.forward(**texts)
+            y_hat = torch.argmax(outputs[1], dim=-1)
+            expand_text_lens = torch.sum(inputs['attention_mask'], dim=-1) - 1
+        rst = []
+        for t_len, _y_hat in zip(expand_text_lens, y_hat):
+            rst.append(self.tokenizer.decode(_y_hat[1:t_len]).replace(' ', ''))
+        return rst

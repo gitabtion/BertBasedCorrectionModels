@@ -4,11 +4,13 @@
 @Author :   Abtion
 @Email  :   abtion{at}outlook.com
 """
+import sys
 import argparse
 import os
 import torch
 from collections import OrderedDict
 
+sys.path.append('..')
 from bbcm.utils import get_abs_path
 
 
@@ -36,10 +38,10 @@ def convert(fn, model_name):
 def parse_args():
     parser = argparse.ArgumentParser(description="fast-bbdl")
     parser.add_argument(
-        "ckpt_fn", default="", help="checkpoint file name", type=str
+        "--ckpt_fn", default="", help="checkpoint file name", type=str
     )
     parser.add_argument(
-        "model_name", default="bert4csc", help="model name, candidates: bert4csc, macbert4csc, SoftMaskedBert", type=str
+        "--model_name", default="bert4csc", help="model name, candidates: bert4csc, macbert4csc, SoftMaskedBert", type=str
     )
 
     args = parser.parse_args()

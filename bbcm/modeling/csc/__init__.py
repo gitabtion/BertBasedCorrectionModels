@@ -5,3 +5,4 @@
 @Email  :   abtion{at}outlook.com
 """
 from .modeling_soft_masked_bert import SoftMaskedBertModel
+from .modeling_bert4csc import BertForCsc

@@ -50,6 +50,20 @@ python tools/train_csc.py --config_file train_SoftMaskedBert.yml
 |BERT4CSC|0.7973|0.8600|0.7029|0.7736|
 |MACBERT4CSC|0.7982|0.8524|0.7140|0.7771|
 
+## 推理
+### 方法一，使用inference脚本:
+```shell
+python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt
+```
+### 方法二，直接调用
+```python
+texts = ['今天我很高心', '测试', '继续测试']
+model.predict(texts)
+```
+### 方法三、导出bert权重，使用transformers或pycorrector调用
+1. 使用convert_to_pure_state_dict导出bert权重
+2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
+
 ## References
 1. [Spelling Error Correction with Soft-Masked BERT](https://arxiv.org/abs/2005.07421)
 2. [http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html](http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html)
