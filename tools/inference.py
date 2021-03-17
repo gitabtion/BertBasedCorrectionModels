@@ -22,7 +22,7 @@ from bbcm.utils import get_abs_path
 def parse_args():
     parser = argparse.ArgumentParser(description="bbcm")
     parser.add_argument(
-        "--config_file", default="csc/train_bert4csc.yml", help="model name", type=str
+        "--config_file", default="csc/train_bert4csc.yml", help="config file", type=str
     )
     parser.add_argument(
         "--ckpt_fn", default="epoch=2-val_loss=0.02.ckpt", help="checkpoint file name", type=str
