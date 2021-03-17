@@ -78,8 +78,9 @@ class CscTrainingModel(BaseTrainingEngine):
 
     def predict(self, texts):
         inputs = self.tokenizer(texts, padding=True, return_tensors='pt')
+        inputs.to(self.cfg.MODEL.DEVICE)
         with torch.no_grad():
-            outputs = self.forward(**texts)
+            outputs = self.forward(texts)
             y_hat = torch.argmax(outputs[1], dim=-1)
             expand_text_lens = torch.sum(inputs['attention_mask'], dim=-1) - 1
         rst = []

@@ -20,7 +20,7 @@ import os
 
 
 def args_parse(config_file=''):
-    parser = argparse.ArgumentParser(description="fast-bbdl")
+    parser = argparse.ArgumentParser(description="bbcm")
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
