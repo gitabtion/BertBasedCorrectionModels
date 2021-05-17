@@ -3,7 +3,7 @@ MODEL:
   DEVICE: "cuda:1"
   NAME: "macbert4csc"
   # [loss_coefficient]
-  HYPER_PARAMS: [ 1.0 ]
+  HYPER_PARAMS: [ 0.7 ]
   GPU_IDS: [1]
   WEIGHTS: "epoch=6-val_loss=0.07.ckpt"
 

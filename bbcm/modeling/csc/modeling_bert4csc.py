@@ -6,7 +6,9 @@
 """
 
 import torch
+import torch.nn as nn
 from transformers import BertForMaskedLM
+from transformers.models.bert.modeling_bert import BertForMaskedLM
 
 from bbcm.engine.csc_trainer import CscTrainingModel
 
@@ -16,6 +18,8 @@ class BertForCsc(CscTrainingModel):
         super().__init__(cfg)
         self.cfg = cfg
         self.bert = BertForMaskedLM.from_pretrained(cfg.MODEL.BERT_CKPT)
+        self.detection = nn.Linear(self.bert.config.hidden_size, 1)
+        self.sigmoid = nn.Sigmoid()
         self.tokenizer = tokenizer
 
     def forward(self, texts, cor_labels=None, det_labels=None):
@@ -27,12 +31,23 @@ class BertForCsc(CscTrainingModel):
             text_labels = None
         encoded_text = self.tokenizer(texts, padding=True, return_tensors='pt')
         encoded_text.to(self.cfg.MODEL.DEVICE)
-        bert_outputs = self.bert(**encoded_text, labels=text_labels, return_dict=False)
+        bert_outputs = self.bert(**encoded_text, labels=text_labels, return_dict=True, output_hidden_states=True)
+        # 检错概率
+        prob = self.sigmoid(self.detection(bert_outputs.hidden_states[-1]))
 
         if text_labels is None:
-            outputs = (torch.zeros_like(encoded_text['input_ids']),) + bert_outputs
+            # 检错输出，纠错输出
+            outputs = (prob, bert_outputs.logits)
         else:
-            outputs = (torch.tensor(0.0, dtype=torch.float),
-                       bert_outputs[0],
-                       det_labels,) + bert_outputs[1:]
+            det_loss_fct = nn.BCELoss()
+            # pad部分不计算损失
+            active_loss = encoded_text['attention_mask'].view(-1, prob.shape[1]) == 1
+            active_probs = prob.view(-1, prob.shape[1])[active_loss]
+            active_labels = det_labels[active_loss]
+            det_loss = det_loss_fct(active_probs, active_labels.float())
+            # 检错loss，纠错loss，检错输出，纠错输出
+            outputs = (det_loss,
+                       bert_outputs.loss,
+                       prob.squeeze(-1),
+                       bert_outputs.logits)
         return outputs

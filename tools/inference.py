@@ -28,6 +28,7 @@ def parse_args():
         "--ckpt_fn", default="epoch=2-val_loss=0.02.ckpt", help="checkpoint file name", type=str
     )
     parser.add_argument("--texts", default=["马上要过年了，提前祝大家心年快乐！"], nargs=argparse.REMAINDER)
+    parser.add_argument("--text_file", default='')
 
     args = parser.parse_args()
     return args
@@ -54,7 +55,14 @@ def load_model(args):
 
 def inference(args):
     model = load_model(args)
-    corrected_texts = model.predict(args.texts)
+    texts = []
+    if os.path.exists(args.text_file):
+        with open(args.text_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                texts.append(line.strip())
+    else:
+        texts = args.texts
+    corrected_texts = model.predict(texts)
     print(corrected_texts)
     return corrected_texts
 

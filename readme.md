@@ -53,7 +53,14 @@ python tools/train_csc.py --config_file train_SoftMaskedBert.yml
 ## 推理
 ### 方法一，使用inference脚本:
 ```shell
-python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt
+python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --texts "我今天很高心"
+# 或给出line by line格式的文本地址
+python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --text_file /ml/data/text.txt
+```
+其中/ml/data/text.txt文本如下：
+```text
+我今天很高心
+你这个辣鸡模型只能做错别字纠正
 ```
 ### 方法二，直接调用
 ```python
@@ -63,6 +70,11 @@ model.predict(texts)
 ### 方法三、导出bert权重，使用transformers或pycorrector调用
 1. 使用convert_to_pure_state_dict导出bert权重
 2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
+
+## 更新记录
+### 20210517
+1. 对BERT4CSC模型新增检错任务
+2. 新增基于LineByLine文件的inference
 
 ## References
 1. [Spelling Error Correction with Soft-Masked BERT](https://arxiv.org/abs/2005.07421)

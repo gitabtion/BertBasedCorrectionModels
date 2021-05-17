@@ -1,10 +1,10 @@
 MODEL:
   BERT_CKPT: "bert-base-chinese"
-  DEVICE: "cuda:1"
+  DEVICE: "cuda:0"
   NAME: "bert4csc"
   # [loss_coefficient]
-  HYPER_PARAMS: [ 1.0 ]
-  GPU_IDS: [1]
+  HYPER_PARAMS: [ 0.7 ]
+  GPU_IDS: [0]
 
 DATASETS:
   TRAIN: "datasets/csc/train.json"

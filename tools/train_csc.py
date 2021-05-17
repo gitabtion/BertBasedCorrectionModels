@@ -21,7 +21,7 @@ import os
 
 
 def main():
-    cfg = args_parse("csc/train_macbert4csc.yml")
+    cfg = args_parse("csc/train_bert4csc.yml")
 
     # 如果不存在训练文件则先处理数据
     if not os.path.exists(get_abs_path(cfg.DATASETS.TRAIN)):
