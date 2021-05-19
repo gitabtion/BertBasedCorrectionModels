@@ -11,6 +11,7 @@ from transformers import BertForMaskedLM
 from transformers.models.bert.modeling_bert import BertForMaskedLM
 
 from bbcm.engine.csc_trainer import CscTrainingModel
+from bbcm.solver.losses import FocalLoss
 
 
 class BertForCsc(CscTrainingModel):
@@ -33,13 +34,13 @@ class BertForCsc(CscTrainingModel):
         encoded_text.to(self.cfg.MODEL.DEVICE)
         bert_outputs = self.bert(**encoded_text, labels=text_labels, return_dict=True, output_hidden_states=True)
         # 检错概率
-        prob = self.sigmoid(self.detection(bert_outputs.hidden_states[-1]))
+        prob = self.detection(bert_outputs.hidden_states[-1])
 
         if text_labels is None:
             # 检错输出，纠错输出
             outputs = (prob, bert_outputs.logits)
         else:
-            det_loss_fct = nn.BCELoss()
+            det_loss_fct = FocalLoss(num_labels=None, activation_type='sigmoid')
             # pad部分不计算损失
             active_loss = encoded_text['attention_mask'].view(-1, prob.shape[1]) == 1
             active_probs = prob.view(-1, prob.shape[1])[active_loss]
@@ -48,6 +49,6 @@ class BertForCsc(CscTrainingModel):
             # 检错loss，纠错loss，检错输出，纠错输出
             outputs = (det_loss,
                        bert_outputs.loss,
-                       prob.squeeze(-1),
+                       self.sigmoid(prob).squeeze(-1),
                        bert_outputs.logits)
         return outputs

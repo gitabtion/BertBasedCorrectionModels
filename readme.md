@@ -29,6 +29,8 @@ python tools/train_csc.py --config_file train_SoftMaskedBert.yml
 - train_macbert4csc.yml
 - train_SoftMaskedBert.yml
 
+如有其他需求，可根据需要自行调整配置文件中的参数。
+
 ## 实验结果
 
 ### SoftMaskedBert
@@ -41,14 +43,14 @@ python tools/train_csc.py --config_file train_SoftMaskedBert.yml
 #### char level
 |MODEL|p|r|f|
 |:-:|:-:|:-:|:-:|
-|BERT4CSC|0.9431|0.8738|0.9071|
-|MACBERT4CSC|0.9074|0.8525|0.8791|
+|BERT4CSC|0.9269|0.8651|0.8949|
+|MACBERT4CSC|0.9380|0.8736|0.9047|
 
 #### sentence level
 |model|acc|p|r|f|
 |:-:|:-:|:-:|:-:|:-:|
-|BERT4CSC|0.7973|0.8600|0.7029|0.7736|
-|MACBERT4CSC|0.7982|0.8524|0.7140|0.7771|
+|BERT4CSC|0.7990|0.8482|0.7214|0.7797|
+|MACBERT4CSC|0.8027|0.8525|0.7251|0.7836|
 
 ## 推理
 ### 方法一，使用inference脚本:
@@ -72,6 +74,11 @@ model.predict(texts)
 2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
 
 ## 更新记录
+### 20210518
+1. 将BERT4CSC检错任务改为使用FocalLoss
+2. 更新修改后的模型实验结果
+3. 降低数据处理时保留原文的概率
+
 ### 20210517
 1. 对BERT4CSC模型新增检错任务
 2. 新增基于LineByLine文件的inference
@@ -84,3 +91,4 @@ model.predict(texts)
 5. [https://github.com/sunnyqiny/Confusionset-guided-Pointer-Networks-for-Chinese-Spelling-Check](https://github.com/sunnyqiny/Confusionset-guided-Pointer-Networks-for-Chinese-Spelling-Check)
 6. [SoftMaskedBert-PyTorch](https://github.com/gitabtion/SoftMaskedBert-PyTorch)
 7. [Deep-Learning-Project-Template](https://github.com/L1aoXingyu/Deep-Learning-Project-Template)
+8. [https://github.com/lonePatient/TorchBlocks](https://github.com/lonePatient/TorchBlocks)

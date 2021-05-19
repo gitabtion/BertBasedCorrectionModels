@@ -168,7 +168,7 @@ def proc_confusion_item(item):
                  'wrong_ids': [],
                  'correct_text': cor_text}]
     # 取一定概率保留原文本
-    if random.random() < 0.3:
+    if random.random() < 0.15:
         rst.append({'id': '--',
                     'original_text': cor_text,
                     'wrong_ids': [],
