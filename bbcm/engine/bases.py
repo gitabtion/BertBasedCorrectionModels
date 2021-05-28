@@ -7,7 +7,7 @@
 import logging
 import pytorch_lightning as pl
 
-from bbcm.solver.build import make_optimizer
+from bbcm.solver.build import make_optimizer, build_lr_scheduler
 from bbcm.solver.lr_scheduler import make_scheduler
 
 
@@ -19,7 +19,7 @@ class BaseTrainingEngine(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = make_optimizer(self.cfg, self)
-        scheduler = make_scheduler(self.cfg, optimizer)
+        scheduler = build_lr_scheduler(self.cfg, optimizer)
 
         return [optimizer], [scheduler]
 

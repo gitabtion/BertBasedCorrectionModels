@@ -6,6 +6,8 @@
 """
 import torch
 
+from bbcm.solver import lr_scheduler
+
 
 def make_optimizer(cfg, model):
     params = []
@@ -23,3 +25,20 @@ def make_optimizer(cfg, model):
     else:
         optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params)
     return optimizer
+
+
+def build_lr_scheduler(cfg, optimizer):
+    scheduler_args = {
+        "optimizer": optimizer,
+
+        # warmup options
+        "warmup_factor": cfg.SOLVER.WARMUP_FACTOR,
+        "warmup_iters": cfg.SOLVER.WARMUP_ITERS,
+        "warmup_method": cfg.SOLVER.WARMUP_METHOD,
+
+        # multi-step lr scheduler options
+        "milestones": cfg.SOLVER.STEPS,
+        "gamma": cfg.SOLVER.GAMMA,
+
+    }
+    return getattr(lr_scheduler, cfg.SOLVER.SCHED)(**scheduler_args)

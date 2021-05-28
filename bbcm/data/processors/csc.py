@@ -5,12 +5,13 @@
 @Email  :   abtion{at}outlook.com
 """
 import gc
+import os
 import random
-from lxml import etree
 
 import opencc
+from lxml import etree
 from tqdm import tqdm
-import os
+
 from bbcm.utils import dump_json, get_abs_path
 
 
@@ -27,11 +28,22 @@ def proc_item(item, convertor):
                          'correction': convertor.convert(mistake.xpath('./CORRECTION/text()')[0].strip())})
 
     rst_items = dict()
+
+    def get_passages_by_id(pgs, _id):
+        p = pgs.get(_id)
+        if p:
+            return p
+        _id = _id[:-1] + str(int(_id[-1]) + 1)
+        p = pgs.get(_id)
+        if p:
+            return p
+        raise ValueError(f'passage not found by {_id}')
+
     for mistake in mistakes:
         if mistake['id'] not in rst_items.keys():
-            rst_items[mistake['id']] = {'original_text': passages[mistake['id']],
+            rst_items[mistake['id']] = {'original_text': get_passages_by_id(passages, mistake['id']),
                                         'wrong_ids': [],
-                                        'correct_text': passages[mistake['id']]}
+                                        'correct_text': get_passages_by_id(passages, mistake['id'])}
 
         # todo 繁体转简体字符数量或位置发生改变校验
 
@@ -110,7 +122,7 @@ def proc_test_set(fp, convertor):
 def read_data(fp):
     for fn in os.listdir(fp):
         if fn.endswith('ing.sgml'):
-            with open(os.path.join(fp, fn), 'r') as f:
+            with open(os.path.join(fp, fn), 'r', encoding='unicode_escape') as f:
                 item = []
                 for line in f:
                     if line.strip().startswith('<ESSAY') and len(item) > 0:
@@ -161,14 +173,12 @@ def proc_confusion_item(item):
         'correct_text': cor_text
     }]
     if len(text) != len(cor_text):
-        print(text)
-        print(cor_text)
         return [{'id': '--',
                  'original_text': cor_text,
                  'wrong_ids': [],
                  'correct_text': cor_text}]
     # 取一定概率保留原文本
-    if random.random() < 0.15:
+    if random.random() < 0.01:
         rst.append({'id': '--',
                     'original_text': cor_text,
                     'wrong_ids': [],

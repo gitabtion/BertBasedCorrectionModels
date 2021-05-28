@@ -1,10 +1,10 @@
 MODEL:
   BERT_CKPT: "bert-base-chinese"
-  DEVICE: "cuda:0"
+  DEVICE: "cuda:2"
   NAME: "bert4csc"
   # [loss_coefficient]
   HYPER_PARAMS: [ 0.5 ]
-  GPU_IDS: [0]
+  GPU_IDS: [2]
 
 DATASETS:
   TRAIN: "datasets/csc/train.json"
@@ -19,6 +19,8 @@ SOLVER:
   MAX_EPOCHS: 10
   ACCUMULATE_GRAD_BATCHES: 16
 
+DATALOADER:
+  NUM_WORKERS: 4
 
 TEST:
   BATCH_SIZE: 16

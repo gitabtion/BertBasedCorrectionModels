@@ -7,7 +7,7 @@
 import sys
 sys.path.append('..')
 
-
+from bbcm.data.loaders.collator import DataCollatorForCsc
 from pytorch_lightning.callbacks import ModelCheckpoint
 from bbcm.data.build import make_loaders
 from bbcm.data.loaders import get_csc_loader
@@ -27,6 +27,7 @@ def main():
     if not os.path.exists(get_abs_path(cfg.DATASETS.TRAIN)):
         preproc()
     tokenizer = BertTokenizer.from_pretrained(cfg.MODEL.BERT_CKPT)
+    collator = DataCollatorForCsc(tokenizer=tokenizer)
     if cfg.MODEL.NAME in ["bert4csc", "macbert4csc"]:
         model = BertForCsc(cfg, tokenizer)
     else:
@@ -36,7 +37,7 @@ def main():
         ckpt_path = get_abs_path(cfg.OUTPUT_DIR, cfg.MODEL.WEIGHTS)
         model.load_from_checkpoint(ckpt_path, cfg=cfg, tokenizer=tokenizer)
 
-    loaders = make_loaders(cfg, get_csc_loader, tokenizer=tokenizer)
+    loaders = make_loaders(cfg, get_csc_loader, _collate_fn=collator)
     ckpt_callback = ModelCheckpoint(
         monitor='val_loss',
         dirpath=get_abs_path(cfg.OUTPUT_DIR),
