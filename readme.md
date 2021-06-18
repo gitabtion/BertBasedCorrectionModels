@@ -22,7 +22,7 @@
 
 运行以下命令以训练模型，首次运行会自动处理数据。
 ```shell
-python tools/train_csc.py --config_file train_SoftMaskedBert.yml
+python tools/train_csc.py --config_file csc/train_SoftMaskedBert.yml
 ```
 可选择不同配置文件以训练不同模型，目前支持以下配置文件：
 - train_bert4csc.yml
