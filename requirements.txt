@@ -8,3 +8,4 @@ tokenizers==0.9.4
 torch==1.6.0
 transformers==4.1.1
 yacs
+lxml
