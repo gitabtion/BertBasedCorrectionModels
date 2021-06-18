@@ -74,6 +74,10 @@ model.predict(texts)
 2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
 
 ## 更新记录
+
+### 20210618
+1. 修复数据处理的编码报错问题
+
 ### 20210518
 1. 将BERT4CSC检错任务改为使用FocalLoss
 2. 更新修改后的模型实验结果

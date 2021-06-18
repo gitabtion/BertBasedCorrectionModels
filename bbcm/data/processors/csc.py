@@ -122,7 +122,7 @@ def proc_test_set(fp, convertor):
 def read_data(fp):
     for fn in os.listdir(fp):
         if fn.endswith('ing.sgml'):
-            with open(os.path.join(fp, fn), 'r', encoding='unicode_escape') as f:
+            with open(os.path.join(fp, fn), 'r', encoding='utf-8', errors='ignore') as f:
                 item = []
                 for line in f:
                     if line.strip().startswith('<ESSAY') and len(item) > 0:
@@ -134,7 +134,7 @@ def read_data(fp):
 
 def read_confusion_data(fp):
     fn = os.path.join(fp, 'train.sgml')
-    with open(fn, 'r') as f:
+    with open(fn, 'r', encoding='utf8') as f:
         item = []
         for line in tqdm(f):
             if line.strip().startswith('<SENT') and len(item) > 0:

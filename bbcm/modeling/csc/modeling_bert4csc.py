@@ -5,7 +5,6 @@
 @Email  :   abtion{at}outlook.com
 """
 
-import torch
 import torch.nn as nn
 from transformers import BertForMaskedLM
 from transformers.models.bert.modeling_bert import BertForMaskedLM
@@ -26,12 +25,12 @@ class BertForCsc(CscTrainingModel):
     def forward(self, texts, cor_labels=None, det_labels=None):
         if cor_labels is not None:
             text_labels = self.tokenizer(cor_labels, padding=True, return_tensors='pt')['input_ids']
-            text_labels = text_labels.to(self.cfg.MODEL.DEVICE)
+            text_labels = text_labels.to(self.device)
             text_labels[text_labels == 0] = -100
         else:
             text_labels = None
         encoded_text = self.tokenizer(texts, padding=True, return_tensors='pt')
-        encoded_text.to(self.cfg.MODEL.DEVICE)
+        encoded_text.to(self.device)
         bert_outputs = self.bert(**encoded_text, labels=text_labels, return_dict=True, output_hidden_states=True)
         # 检错概率
         prob = self.detection(bert_outputs.hidden_states[-1])
