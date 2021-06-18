@@ -125,8 +125,8 @@ def compute_sentence_level_prf(results, logger):
                 FN += 1
 
     acc = (TP + TN) / total_num
-    precision = TP / (TP + FP)
-    recall = TP / (TP + FN)
+    precision = TP / (TP + FP) if TP > 0 else 0.0
+    recall = TP / (TP + FN) if TP > 0 else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall != 0 else 0
 
     logger.info(f'Sentence Level: acc:{acc:.6f}, precision:{precision:.6f}, recall:{recall:.6f}, f1:{f1:.6f}')
