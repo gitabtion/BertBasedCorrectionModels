@@ -8,7 +8,6 @@ import logging
 import pytorch_lightning as pl
 
 from bbcm.solver.build import make_optimizer, build_lr_scheduler
-from bbcm.solver.lr_scheduler import make_scheduler
 
 
 class BaseTrainingEngine(pl.LightningModule):
@@ -22,6 +21,7 @@ class BaseTrainingEngine(pl.LightningModule):
         scheduler = build_lr_scheduler(self.cfg, optimizer)
 
         return [optimizer], [scheduler]
+        # return [optimizer]
 
     def on_validation_epoch_start(self) -> None:
         self._logger.info('Valid.')

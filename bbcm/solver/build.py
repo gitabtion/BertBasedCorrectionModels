@@ -33,12 +33,18 @@ def build_lr_scheduler(cfg, optimizer):
 
         # warmup options
         "warmup_factor": cfg.SOLVER.WARMUP_FACTOR,
-        "warmup_iters": cfg.SOLVER.WARMUP_ITERS,
+        "warmup_epochs": cfg.SOLVER.WARMUP_EPOCHS,
         "warmup_method": cfg.SOLVER.WARMUP_METHOD,
 
         # multi-step lr scheduler options
         "milestones": cfg.SOLVER.STEPS,
         "gamma": cfg.SOLVER.GAMMA,
 
+        # cosine annealing lr scheduler options
+        "max_iters": cfg.SOLVER.MAX_ITER,
+        "delay_iters": cfg.SOLVER.DELAY_ITERS,
+        "eta_min_lr": cfg.SOLVER.ETA_MIN_LR,
+
     }
-    return getattr(lr_scheduler, cfg.SOLVER.SCHED)(**scheduler_args)
+    scheduler = getattr(lr_scheduler, cfg.SOLVER.SCHED)(**scheduler_args)
+    return {'scheduler': scheduler, 'interval': cfg.SOLVER.INTERVAL}

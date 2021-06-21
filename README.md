@@ -96,6 +96,21 @@ model.predict(texts)
 1. 对BERT4CSC模型新增检错任务
 2. 新增基于LineByLine文件的inference
 
+## 引用
+如果你在研究中使用了本项目，请按如下格式引用：
+
+```
+@software{BertBaseCorrectionModels,
+  author = {Heng Cai},
+  title = {{BERT Based Correction Models}},
+  year = {2020},
+  url = {https://github.com/gitabtion/BertBasedCorrectionModels},
+}
+```
+
+## License
+本源代码的授权协议为 Apache License 2.0，可免费用做商业用途。请在产品说明中附加本项目的链接和授权协议。本项目受版权法保护，侵权必究。
+
 ## References
 1. [Spelling Error Correction with Soft-Masked BERT](https://arxiv.org/abs/2005.07421)
 2. [http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html](http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html)
