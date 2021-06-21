@@ -18,12 +18,21 @@
     SIGHAN15_CSC_TestTruth.txt
     ```
 
+## 环境准备
+1. 使用已有编码环境或通过 `conda create -n <your_env_name> python=3.7` 创建一个新环境（推荐）
+2. 克隆本项目并进入项目根目录 
+3. 安装所需依赖 `pip install -r requirements.txt`
+4. 如果出现报错 GLIBC 版本过低的问题（GLIBC 的版本更迭容易出事故，不推荐更新），openCC 改为安装较低版本（例如 1.1.0）
+5. 在当前终端将此目录加入环境变量 `export PYTHONPATH=.`
+
+
 ## 训练
 
 运行以下命令以训练模型，首次运行会自动处理数据。
 ```shell
-python tools/train_csc.py --config_file train_SoftMaskedBert.yml
+python tools/train_csc.py --config_file csc/train_SoftMaskedBert.yml
 ```
+
 可选择不同配置文件以训练不同模型，目前支持以下配置文件：
 - train_bert4csc.yml
 - train_macbert4csc.yml

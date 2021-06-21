@@ -1,4 +1,4 @@
-OpenCC==1.1.1
+OpenCC>=1.1.0,<=1.1.1
 pytorch-lightning==1.1.2
 six==1.14.0
 tensorboard==2.4.0
@@ -8,3 +8,4 @@ tokenizers==0.9.4
 torch==1.6.0
 transformers==4.1.1
 yacs
+lxml
