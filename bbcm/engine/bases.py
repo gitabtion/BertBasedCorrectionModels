@@ -21,7 +21,9 @@ class BaseTrainingEngine(pl.LightningModule):
         scheduler = build_lr_scheduler(self.cfg, optimizer)
 
         return [optimizer], [scheduler]
-        # return [optimizer]
 
     def on_validation_epoch_start(self) -> None:
         self._logger.info('Valid.')
+
+    def on_test_epoch_start(self) -> None:
+        self._logger.info('Testing...')

@@ -7,7 +7,7 @@
 import operator
 import os
 from collections import OrderedDict
-
+import transformers as tfs
 import torch
 from torch import nn
 import pytorch_lightning as pl
@@ -49,7 +49,6 @@ class BertCorrectionModel(torch.nn.Module, ModuleUtilsMixin):
         self.embeddings = BertEmbeddings(self.config)
         self.corrector = BertEncoder(self.config)
         self.mask_token_id = self.tokenizer.mask_token_id
-        self.pooler = BertPooler(self.config)
         self.cls = BertOnlyMLMHead(self.config)
         self._device = device
 
@@ -67,9 +66,9 @@ class BertCorrectionModel(torch.nn.Module, ModuleUtilsMixin):
             embed = self.embeddings(input_ids=encoded_texts['input_ids'],
                                     token_type_ids=encoded_texts['token_type_ids'])
         # 此处较原文有一定改动，做此改动意在完整保留type_ids及position_ids的embedding。
-        # mask_embed = self.embeddings(torch.ones_like(prob.squeeze(-1)).long() * self.mask_token_id).detach()
+        mask_embed = self.embeddings(torch.ones_like(prob.squeeze(-1)).long() * self.mask_token_id).detach()
         # 此处为原文实现
-        mask_embed = self.embeddings(torch.tensor([[self.mask_token_id]], device=self._device)).detach()
+        # mask_embed = self.embeddings(torch.tensor([[self.mask_token_id]], device=self._device)).detach()
         cor_embed = prob * mask_embed + (1 - prob) * embed
 
         input_shape = encoded_texts['input_ids'].size()
@@ -87,11 +86,10 @@ class BertCorrectionModel(torch.nn.Module, ModuleUtilsMixin):
             return_dict=False,
         )
         sequence_output = encoder_outputs[0]
-        pooled_output = self.pooler(sequence_output) if self.pooler is not None else None
 
         sequence_output = sequence_output + embed if residual_connection else sequence_output
         prediction_scores = self.cls(sequence_output)
-        out = (prediction_scores, sequence_output, pooled_output)
+        out = (prediction_scores, sequence_output)
 
         # Masked language modeling softmax layer
         if text_labels is not None:
@@ -102,7 +100,7 @@ class BertCorrectionModel(torch.nn.Module, ModuleUtilsMixin):
 
     def load_from_transformers_state_dict(self, gen_fp):
         state_dict = OrderedDict()
-        gen_state_dict = torch.load(gen_fp)
+        gen_state_dict = tfs.AutoModelForMaskedLM.from_pretrained(gen_fp).state_dict()
         for k, v in gen_state_dict.items():
             name = k
             if name.startswith('bert'):
@@ -121,10 +119,11 @@ class SoftMaskedBertModel(CscTrainingModel):
     def __init__(self, cfg, tokenizer):
         super().__init__(cfg)
         self.cfg = cfg
-        self.config = BertConfig.from_pretrained(cfg.MODEL.BERT_CKPT)
+        self.config = tfs.AutoConfig.from_pretrained(cfg.MODEL.BERT_CKPT)
         self.detector = DetectionNetwork(self.config)
         self.tokenizer = tokenizer
         self.corrector = BertCorrectionModel(self.config, tokenizer, cfg.MODEL.DEVICE)
+        self.corrector.load_from_transformers_state_dict(self.cfg.MODEL.BERT_CKPT)
         self._device = cfg.MODEL.DEVICE
 
     def forward(self, texts, cor_labels=None, det_labels=None):

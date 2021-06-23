@@ -41,7 +41,7 @@ def main():
     ckpt_callback = ModelCheckpoint(
         monitor='val_loss',
         dirpath=get_abs_path(cfg.OUTPUT_DIR),
-        filename='{epoch}-{val_loss:.2f}',
+        filename='{epoch:02d}-{val_loss:.5f}',
         save_top_k=1,
         mode='min'
     )

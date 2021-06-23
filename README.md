@@ -79,22 +79,8 @@ texts = ['今天我很高心', '测试', '继续测试']
 model.predict(texts)
 ```
 ### 方法三、导出bert权重，使用transformers或pycorrector调用
-1. 使用convert_to_pure_state_dict导出bert权重
+1. 使用convert_to_pure_state_dict.py导出bert权重
 2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
-
-## 更新记录
-
-### 20210618
-1. 修复数据处理的编码报错问题
-
-### 20210518
-1. 将BERT4CSC检错任务改为使用FocalLoss
-2. 更新修改后的模型实验结果
-3. 降低数据处理时保留原文的概率
-
-### 20210517
-1. 对BERT4CSC模型新增检错任务
-2. 新增基于LineByLine文件的inference
 
 ## 引用
 如果你在研究中使用了本项目，请按如下格式引用：
@@ -110,6 +96,21 @@ model.predict(texts)
 
 ## License
 本源代码的授权协议为 Apache License 2.0，可免费用做商业用途。请在产品说明中附加本项目的链接和授权协议。本项目受版权法保护，侵权必究。
+
+
+## 更新记录
+
+### 20210618
+1. 修复数据处理的编码报错问题
+
+### 20210518
+1. 将BERT4CSC检错任务改为使用FocalLoss
+2. 更新修改后的模型实验结果
+3. 降低数据处理时保留原文的概率
+
+### 20210517
+1. 对BERT4CSC模型新增检错任务
+2. 新增基于LineByLine文件的inference
 
 ## References
 1. [Spelling Error Correction with Soft-Masked BERT](https://arxiv.org/abs/2005.07421)

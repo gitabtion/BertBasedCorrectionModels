@@ -7,7 +7,6 @@
 
 import torch.nn as nn
 from transformers import BertForMaskedLM
-from transformers.models.bert.modeling_bert import BertForMaskedLM
 
 from bbcm.engine.csc_trainer import CscTrainingModel
 from bbcm.solver.losses import FocalLoss
