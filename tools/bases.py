@@ -68,7 +68,7 @@ def train(config, model, loaders, ckpt_callback=None):
     trainer = pl.Trainer(max_epochs=config.SOLVER.MAX_EPOCHS,
                          gpus=None if config.MODEL.DEVICE == 'cpu' else config.MODEL.GPU_IDS,
                          accumulate_grad_batches=config.SOLVER.ACCUMULATE_GRAD_BATCHES,
-                         checkpoint_callback=ckpt_callback)
+                         callbacks=[ckpt_callback])
     # 满足以下条件才进行训练
     # 1. 配置文件中要求进行训练
     # 2. train_loader不为空
