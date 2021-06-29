@@ -34,6 +34,29 @@ def parse_args():
     return args
 
 
+def load_model_directly(ckpt_file, config_file):
+    # Example:
+    # ckpt_fn = 'SoftMaskedBert/epoch=02-val_loss=0.02904.ckpt' (find in checkpoints)
+    # config_file = 'csc/train_SoftMaskedBert.yml' (find in configs)
+    
+    from bbcm.config import cfg
+    cp = get_abs_path('checkpoints', ckpt_file)
+    cfg.merge_from_file(get_abs_path('configs', config_file))
+    tokenizer = BertTokenizer.from_pretrained(cfg.MODEL.BERT_CKPT)
+
+    if cfg.MODEL.NAME in ['bert4csc', 'macbert4csc']:
+        model = BertForCsc.load_from_checkpoint(cp,
+                                                cfg=cfg,
+                                                tokenizer=tokenizer)
+    else:
+        model = SoftMaskedBertModel.load_from_checkpoint(cp,
+                                                         cfg=cfg,
+                                                         tokenizer=tokenizer)
+    model.eval()
+    model.to(cfg.MODEL.DEVICE)
+    return model
+
+
 def load_model(args):
     from bbcm.config import cfg
     cfg.merge_from_file(get_abs_path('configs', args.config_file))
