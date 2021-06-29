@@ -75,6 +75,10 @@ python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --text_file /ml/data/te
 ```
 ### 方法二，直接调用
 ```python
+from tools.inference import *
+ckpt_fn = 'SoftMaskedBert/epoch=02-val_loss=0.02904.ckpt'  # find it in checkpoints/
+config_file = 'csc/train_SoftMaskedBert.yml'  # find it in configs/
+model = load_model_directly(ckpt_fn=ckpt_fn, config_file=config_file)
 texts = ['今天我很高心', '测试', '继续测试']
 model.predict(texts)
 ```
