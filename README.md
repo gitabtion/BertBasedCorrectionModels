@@ -86,11 +86,11 @@ model.predict(texts)
 如果你在研究中使用了本项目，请按如下格式引用：
 
 ```
-@software{BertBaseCorrectionModels,
-  author = {Heng Cai},
-  title = {{BERT Based Correction Models}},
-  year = {2020},
-  url = {https://github.com/gitabtion/BertBasedCorrectionModels},
+@article{cai2020pre,
+  title={BERT Based Correction Models},
+  author={Cai, Heng and Chen, Dian},
+  journal={GitHub. Note: https://github.com/gitabtion/BertBasedCorrectionModels},
+  year={2020}
 }
 ```
 
