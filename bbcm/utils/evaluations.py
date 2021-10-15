@@ -131,3 +131,126 @@ def compute_sentence_level_prf(results, logger):
 
     logger.info(f'Sentence Level: acc:{acc:.6f}, precision:{precision:.6f}, recall:{recall:.6f}, f1:{f1:.6f}')
     return acc, precision, recall, f1
+
+
+def report_prf(tp, fp, fn, phase, logger=None, return_dict=False):
+    # For the detection Precision, Recall and F1
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+    if precision + recall == 0:
+        f1_score = 0
+    else:
+        f1_score = 2 * (precision * recall) / (precision + recall)
+
+    if phase and logger:
+        logger.info(f"The {phase} result is: "
+                    f"{precision:.4f}/{recall:.4f}/{f1_score:.4f} -->\n"
+                    # f"precision={precision:.6f}, recall={recall:.6f} and F1={f1_score:.6f}\n"
+                    f"support: TP={tp}, FP={fp}, FN={fn}")
+    if return_dict:
+        ret_dict = {
+            f'{phase}_p': precision,
+            f'{phase}_r': recall,
+            f'{phase}_f1': f1_score}
+        return ret_dict
+    return precision, recall, f1_score
+
+
+def compute_corrector_prf_faspell(results, logger=None, strict=True):
+    """
+    All-in-one measure function.
+    based on FASpell's measure script.
+    :param results: a list of (wrong, correct, predict, ...)
+    both token_ids or characters are fine for the script.
+    :param logger: take which logger to print logs.
+    :param strict: a more strict evaluation mode (all-char-detected/corrected)
+    References:
+        sentence-level PRF: https://github.com/iqiyi/
+        FASPell/blob/master/faspell.py
+    """
+
+    corrected_char, wrong_char = 0, 0
+    corrected_sent, wrong_sent = 0, 0
+    true_corrected_char = 0
+    true_corrected_sent = 0
+    true_detected_char = 0
+    true_detected_sent = 0
+    accurate_detected_sent = 0
+    accurate_corrected_sent = 0
+    all_sent = 0
+
+    for item in results:
+        # wrong, correct, predict, d_tgt, d_predict = item
+        wrong, correct, predict = item[:3]
+
+        all_sent += 1
+        wrong_num = 0
+        corrected_num = 0
+        original_wrong_num = 0
+        true_detected_char_in_sentence = 0
+
+        for c, w, p in zip(correct, wrong, predict):
+            if c != p:
+                wrong_num += 1
+            if w != p:
+                corrected_num += 1
+                if c == p:
+                    true_corrected_char += 1
+                if w != c:
+                    true_detected_char += 1
+                    true_detected_char_in_sentence += 1
+            if c != w:
+                original_wrong_num += 1
+
+        corrected_char += corrected_num
+        wrong_char += original_wrong_num
+        if original_wrong_num != 0:
+            wrong_sent += 1
+        if corrected_num != 0 and wrong_num == 0:
+            true_corrected_sent += 1
+
+        if corrected_num != 0:
+            corrected_sent += 1
+
+        if strict:  # find out all faulty wordings' potisions
+            true_detected_flag = (true_detected_char_in_sentence == original_wrong_num \
+                                  and original_wrong_num != 0 \
+                                  and corrected_num == true_detected_char_in_sentence)
+        else:  # think it has faulty wordings
+            true_detected_flag = (corrected_num != 0 and original_wrong_num != 0)
+            
+        # if corrected_num != 0 and original_wrong_num != 0:
+        if true_detected_flag:
+            true_detected_sent += 1
+        if correct == predict:
+            accurate_corrected_sent += 1
+        if correct == predict or true_detected_flag:
+            accurate_detected_sent += 1
+
+    counts = {  # TP, FP, TN for each level
+        'det_char_counts': [true_detected_char,
+                            corrected_char-true_detected_char, 
+                            wrong_char-true_detected_char],
+        'cor_char_counts': [true_corrected_char, 
+                            corrected_char-true_corrected_char, 
+                            wrong_char-true_corrected_char],
+        'det_sent_counts': [true_detected_sent, 
+                            corrected_sent-true_detected_sent, 
+                            wrong_sent-true_detected_sent],
+        'cor_sent_counts': [true_corrected_sent, 
+                            corrected_sent-true_corrected_sent, 
+                            wrong_sent-true_corrected_sent],
+        'det_sent_acc': accurate_detected_sent / all_sent,
+        'cor_sent_acc': accurate_corrected_sent / all_sent,
+        'all_sent_count': all_sent,
+    }
+
+    details = {}
+    for phase in ['det_char', 'cor_char', 'det_sent', 'cor_sent']:
+        dic = report_prf(
+            *counts[f'{phase}_counts'], 
+            phase=phase, logger=logger,
+            return_dict=True)
+        details.update(dic)
+    details.update(counts)
+    return details
