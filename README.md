@@ -64,23 +64,33 @@ python tools/train_csc.py --config_file csc/train_SoftMaskedBert.yml
 ## 推理
 ### 方法一，使用inference脚本:
 ```shell
+cd tools
 python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --texts "我今天很高心"
+推理输出：['我今天很高兴']
+
 # 或给出line by line格式的文本地址
-python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --text_file /ml/data/text.txt
+cd tools
+python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --text_file ./ml/data/text.txt
 ```
 其中/ml/data/text.txt文本如下：
 ```text
 我今天很高心
 你这个辣鸡模型只能做错别字纠正
 ```
+推理输出：
+['我今天很高兴', '你这个辣鸡模型只能做错别字纠正']
+
 ### 方法二，直接调用
 ```python
 from tools.inference import *
 ckpt_fn = 'SoftMaskedBert/epoch=02-val_loss=0.02904.ckpt'  # find it in checkpoints/
 config_file = 'csc/train_SoftMaskedBert.yml'  # find it in configs/
-model = load_model_directly(ckpt_fn=ckpt_fn, config_file=config_file)
+model = load_model_directly(ckpt_fn, config_file)
 texts = ['今天我很高心', '测试', '继续测试']
 model.predict(texts)
+推理输出：
+['今天我很高兴', '测试', '继续测试']
+
 ```
 ### 方法三、导出bert权重，使用transformers或pycorrector调用
 1. 使用convert_to_pure_state_dict.py导出bert权重
