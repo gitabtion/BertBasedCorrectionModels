@@ -71,14 +71,13 @@ python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --texts "我今天很�
 # 或给出line by line格式的文本地址
 cd tools
 python inference.py --ckpt_fn epoch=0-val_loss=0.03.ckpt --text_file ./ml/data/text.txt
+推理输出：['我今天很高兴', '你这个辣鸡模型只能做错别字纠正']
 ```
 其中/ml/data/text.txt文本如下：
 ```text
 我今天很高心
 你这个辣鸡模型只能做错别字纠正
 ```
-推理输出：
-['我今天很高兴', '你这个辣鸡模型只能做错别字纠正']
 
 ### 方法二，直接调用
 ```python
