@@ -95,6 +95,11 @@ model.predict(texts)
 1. 使用convert_to_pure_state_dict.py导出bert权重
 2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
 
+## 模型下载
+1. SoftMaskedBert、macbert4csc及bert4csc三个模型文件夹及训练参数可从[模型文件](https://pan.baidu.com/s/1TKFFTLuEFXNh-g7xBY0IOg?pwd=za92)下载后放入: BertBasedCorrectionModels/checkpoints/路径下推理使用。
+
+
+
 ## 引用
 如果你在研究中使用了本项目，请按如下格式引用：
 
@@ -112,6 +117,12 @@ model.predict(texts)
 
 
 ## 更新记录
+### 20220517
+1. trained and add the trained SoftMaskedBert、macbert4csc及bert4csc checkpoint model file download info in README.md
+
+### 20220513
+1. new add the model inference postprocess module in tools/inference.py
+
 ### 20220511
 1. 更新README.md 推理部分方法1+2 code
 
