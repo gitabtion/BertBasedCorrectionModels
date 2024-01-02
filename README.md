@@ -93,7 +93,7 @@ model.predict(texts)
 ```
 ### 方法三、导出bert权重，使用transformers或pycorrector调用
 1. 使用convert_to_pure_state_dict.py导出bert权重
-2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md](https://github.com/shibing624/pycorrector/blob/master/pycorrector/macbert/README.md)
+2. 后续步骤参考[https://github.com/shibing624/pycorrector/blob/master/README.md](https://github.com/shibing624/pycorrector/blob/master/README.md)
 
 ## 模型下载
 1. SoftMaskedBert、macbert4csc及bert4csc三个模型文件夹及训练参数可从[模型文件](https://pan.baidu.com/s/1TKFFTLuEFXNh-g7xBY0IOg?pwd=za92)下载后放入: BertBasedCorrectionModels/checkpoints/路径下推理使用。
@@ -117,6 +117,9 @@ model.predict(texts)
 
 
 ## 更新记录
+### 20230102
+1. update the web link in readme as previous is not valid.
+   
 ### 20220517
 1. trained and add the trained SoftMaskedBert、macbert4csc及bert4csc checkpoint model file download info in README.md
 
