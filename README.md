@@ -17,6 +17,7 @@
     SIGHAN15_CSC_TestInput.txt
     SIGHAN15_CSC_TestTruth.txt
     ```
+ps: sighan下载链接已失效，github有其分发版本，见[https://github.com/NYCU-NLP/SIGHAN-CSC]https://github.com/NYCU-NLP/SIGHAN-CSC
 
 ## 环境准备
 1. 使用已有编码环境或通过 `conda create -n <your_env_name> python=3.7` 创建一个新环境（推荐）
