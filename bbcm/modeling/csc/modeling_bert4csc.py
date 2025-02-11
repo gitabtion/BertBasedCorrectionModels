@@ -23,12 +23,12 @@ class BertForCsc(CscTrainingModel):
 
     def forward(self, texts, cor_labels=None, det_labels=None):
         if cor_labels is not None:
-            text_labels = self.tokenizer(cor_labels, padding=True, return_tensors='pt')['input_ids']
+            text_labels = self.tokenizer(cor_labels, padding=True, return_tensors='pt', truncation=True)['input_ids']
             text_labels = text_labels.to(self.device)
             text_labels[text_labels == 0] = -100
         else:
             text_labels = None
-        encoded_text = self.tokenizer(texts, padding=True, return_tensors='pt')
+        encoded_text = self.tokenizer(texts, padding=True, return_tensors='pt', truncation=True)
         encoded_text.to(self.device)
         bert_outputs = self.bert(**encoded_text, labels=text_labels, return_dict=True, output_hidden_states=True)
         # 检错概率
