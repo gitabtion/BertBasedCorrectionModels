@@ -54,13 +54,13 @@ class BertCorrectionModel(torch.nn.Module, ModuleUtilsMixin):
 
     def forward(self, texts, prob, embed=None, cor_labels=None, residual_connection=False):
         if cor_labels is not None:
-            text_labels = self.tokenizer(cor_labels, padding=True, return_tensors='pt')['input_ids']
+            text_labels = self.tokenizer(cor_labels, padding=True, return_tensors='pt', truncation=True)['input_ids']
             text_labels = text_labels.to(self._device)
             # torch的cross entropy loss 会忽略-100的label
             text_labels[text_labels == 0] = -100
         else:
             text_labels = None
-        encoded_texts = self.tokenizer(texts, padding=True, return_tensors='pt')
+        encoded_texts = self.tokenizer(texts, padding=True, return_tensors='pt', truncation=True)
         encoded_texts.to(self._device)
         if embed is None:
             embed = self.embeddings(input_ids=encoded_texts['input_ids'],
@@ -127,7 +127,7 @@ class SoftMaskedBertModel(CscTrainingModel):
         self._device = cfg.MODEL.DEVICE
 
     def forward(self, texts, cor_labels=None, det_labels=None):
-        encoded_texts = self.tokenizer(texts, padding=True, return_tensors='pt')
+        encoded_texts = self.tokenizer(texts, padding=True, return_tensors='pt', truncation=True)
         encoded_texts.to(self._device)
         embed = self.corrector.embeddings(input_ids=encoded_texts['input_ids'],
                                           token_type_ids=encoded_texts['token_type_ids'])
